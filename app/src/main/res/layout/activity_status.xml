@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical" >
 
     <LinearLayout
         android:id="@+id/linearLayout3"
+        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical" >
 
         <LinearLayout
@@ -58,7 +59,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:padding="10dp"
-                    android:background="@drawable/oto_3"/>
+                    android:background="@drawable/vehicle_speed"/>
                 <TextView
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
@@ -98,7 +99,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:padding="10dp"
-                    android:background="@drawable/automotive"/>
+                    android:background="@drawable/temp_png"/>
                 <TextView
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
@@ -129,7 +130,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:padding="10dp"
-                    android:background="@drawable/oto_oil"/>
+                    android:background="@drawable/fuel_png"/>
                 <TextView
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
