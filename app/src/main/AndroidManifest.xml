@@ -26,7 +26,8 @@
             android:exported="true" />
 
         <activity android:name=".view.ConnectBluetoothActivity" />
-        <activity android:name=".view.StatusActivity" />
+        <activity android:name=".view.StatusActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity android:name=".view.DeviceListActivity"></activity>
     </application>
 
