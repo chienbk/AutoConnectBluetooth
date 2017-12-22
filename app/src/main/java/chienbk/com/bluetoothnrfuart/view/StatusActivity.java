@@ -1,6 +1,5 @@
 package chienbk.com.bluetoothnrfuart.view;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -10,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.RequiresApi;
@@ -19,11 +19,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +34,7 @@ import java.util.Date;
 
 import chienbk.com.bluetoothnrfuart.R;
 import chienbk.com.bluetoothnrfuart.service.BluetoothService;
+import chienbk.com.bluetoothnrfuart.utils.Contans;
 
 public class StatusActivity extends AppCompatActivity {
 
@@ -54,6 +55,7 @@ public class StatusActivity extends AppCompatActivity {
     private BluetoothAdapter mBtAdapter = null;
     private ArrayAdapter<String> listAdapter;
     private String deviceAddress = "";
+    private LinearLayout layout_speed, layout_rpm, layout_coolant, layout_fuel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,8 +114,13 @@ public class StatusActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
 
             mService = ((BluetoothService.LocalBinder) iBinder).getService();
+            layout_rpm.setClickable(true);
+            layout_coolant.setClickable(true);
+            layout_fuel.setClickable(true);
+            layout_speed.setClickable(true);
             Log.d(TAG, "onServiceConnected mService= " + mService);
             mService.connect(deviceAddress);
+
             if (!mService.initialize()) {
                 Log.e(TAG, "Unable to initialize Bluetooth");
                 finish();
@@ -130,6 +137,7 @@ public class StatusActivity extends AppCompatActivity {
 
         @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
         public void onReceive(Context context, Intent intent) {
+
             String action = intent.getAction();
 
             final Intent mIntent = intent;
@@ -179,9 +187,27 @@ public class StatusActivity extends AppCompatActivity {
                     public void run() {
                         try {
                             String text = new String(txValue, "UTF-8");
+                            Log.d(TAG, "dataReceive: " + txValue.toString());
+                            Log.d(TAG, "data After format: " + text);
                             String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
                             listAdapter.add("["+currentDateTimeString+"] Receive: "+text);
                             lvMessage.smoothScrollToPosition(listAdapter.getCount() - 1);
+
+                            if (text.contains("01 0D")) {
+                                txtVehicleSpeed.setText(text.substring(1, text.length()));
+                            }
+
+                            if (text.contains("1 0C")){
+                                txtEngineRPM.setText(text.substring(1, text.length()));
+                            }
+
+                            if (text.contains("1 05")) {
+                                txtEngineCoolant.setText(text.substring(1, text.length()));
+                            }
+
+                            if (text.contains("1 2F")) {
+                                txtFuelTank.setText(text.substring(1, text.length()));
+                            }
 
                         } catch (Exception e) {
                             Log.e(TAG, e.toString());
@@ -198,6 +224,23 @@ public class StatusActivity extends AppCompatActivity {
 
         }
     };
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if ( v instanceof EditText) {
+                Rect outRect = new Rect();
+                v.getGlobalVisibleRect(outRect);
+                if (!outRect.contains((int)event.getRawX(), (int)event.getRawY())) {
+                    v.clearFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            }
+        }
+        return super.dispatchTouchEvent( event );
+    }
 
     private void initControls() {
         //// TODO: 12/21/2017
@@ -222,6 +265,62 @@ public class StatusActivity extends AppCompatActivity {
                 }
             }
         });
+
+        layout_speed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mService != null) {
+                    String value = Contans.VERHICLE_SPEED;
+                    try {
+                        mService.writeRXCharacteristic(value.getBytes("UTF-8"));
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        layout_fuel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mService != null) {
+                    String value = Contans.FUEL_TANK_LEVEL_INPUT;
+                    try {
+                        mService.writeRXCharacteristic(value.getBytes("UTF-8"));
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        layout_coolant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mService != null) {
+                    String value = Contans.ENGINE_COOLANT_TEMPERATURE;
+                    try {
+                        mService.writeRXCharacteristic(value.getBytes("UTF-8"));
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        layout_rpm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mService != null) {
+                    String value = Contans.ENGINE_RPM;
+                    try {
+                        mService.writeRXCharacteristic(value.getBytes("UTF-8"));
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 
     private void initViews() {
@@ -238,14 +337,15 @@ public class StatusActivity extends AppCompatActivity {
 
         btnSendMessage = (Button) findViewById(R.id.sendButton);
 
-        hideKeyboard(this);
-    }
+        layout_speed = (LinearLayout) findViewById(R.id.layout_speed);
+        layout_rpm = (LinearLayout) findViewById(R.id.layout_rpm);
+        layout_coolant = (LinearLayout) findViewById(R.id.layout_coolant);
+        layout_fuel = (LinearLayout) findViewById(R.id.layout_fuel);
 
-    public static void hideKeyboard(Activity activity) {
-        if (activity != null && activity.getWindow() != null && activity.getWindow().getDecorView() != null) {
-            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
-        }
+        layout_speed.setClickable(false);
+        layout_fuel.setClickable(false);
+        layout_coolant.setClickable(false);
+        layout_rpm.setClickable(false);
     }
 
     private void showMessage(String msg){

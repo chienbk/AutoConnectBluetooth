@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textSize="15sp"
-            android:text="Design by Fsoft Team"/>
+            android:text="Design by Viet Plus"/>
 
     </LinearLayout>
 
