@@ -192,7 +192,7 @@ public class StatusActivity extends AppCompatActivity {
                             String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
                             listAdapter.add("["+currentDateTimeString+"] Receive: "+text);
                             lvMessage.smoothScrollToPosition(listAdapter.getCount() - 1);
-
+                            showMessage("["+currentDateTimeString+"] Receive: "+text);
                             if (text.contains("01 0D")) {
                                 txtVehicleSpeed.setText(text.substring(1, text.length()));
                             }
@@ -258,6 +258,7 @@ public class StatusActivity extends AppCompatActivity {
                     String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
                     listAdapter.add("["+currentDateTimeString+"] Send: "+ message);
                     lvMessage.smoothScrollToPosition(listAdapter.getCount() - 1);
+                    showMessage("["+currentDateTimeString+"] Send: "+ message);
                     editMessage.setText("");
                 } catch (UnsupportedEncodingException e) {
                     // TODO Auto-generated catch block
@@ -273,6 +274,7 @@ public class StatusActivity extends AppCompatActivity {
                     String value = Contans.VERHICLE_SPEED;
                     try {
                         mService.writeRXCharacteristic(value.getBytes("UTF-8"));
+                        showMessage(value);
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
@@ -287,6 +289,7 @@ public class StatusActivity extends AppCompatActivity {
                     String value = Contans.FUEL_TANK_LEVEL_INPUT;
                     try {
                         mService.writeRXCharacteristic(value.getBytes("UTF-8"));
+                        showMessage(value);
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
@@ -301,6 +304,7 @@ public class StatusActivity extends AppCompatActivity {
                     String value = Contans.ENGINE_COOLANT_TEMPERATURE;
                     try {
                         mService.writeRXCharacteristic(value.getBytes("UTF-8"));
+                        showMessage(value);
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
@@ -315,6 +319,7 @@ public class StatusActivity extends AppCompatActivity {
                     String value = Contans.ENGINE_RPM;
                     try {
                         mService.writeRXCharacteristic(value.getBytes("UTF-8"));
+                        showMessage(value);
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
