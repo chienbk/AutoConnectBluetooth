@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.le.BluetoothLeScanner;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -11,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.IBinder;
@@ -21,8 +23,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import chienbk.com.bluetoothnrfuart.R;
 import chienbk.com.bluetoothnrfuart.service.BluetoothService;
@@ -37,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int UART_PROFILE_CONNECTED = 20;
     private static final int UART_PROFILE_DISCONNECTED = 21;
     private static final int STATE_OFF = 10;
+    private static final int REQUEST_CODE_LOC = 22;
 
     private int mState = UART_PROFILE_DISCONNECTED;
     private BluetoothService mService = null;
@@ -47,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            accessLocationPermission();
+        }
         mBtAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBtAdapter == null) {
             showMessage("Bluetooth is not available");
@@ -302,6 +310,47 @@ public class MainActivity extends AppCompatActivity {
             default:
                 Log.e(TAG, "wrong request code");
                 break;
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void accessLocationPermission() {
+        int accessCoarseLocation = checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION);
+        int accessFineLocation   = checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION);
+
+        List<String> listRequestPermission = new ArrayList<String>();
+
+        if (accessCoarseLocation != PackageManager.PERMISSION_GRANTED) {
+            listRequestPermission.add(android.Manifest.permission.ACCESS_COARSE_LOCATION);
+        }
+        if (accessFineLocation != PackageManager.PERMISSION_GRANTED) {
+            listRequestPermission.add(android.Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+
+        if (!listRequestPermission.isEmpty()) {
+            String[] strRequestPermission = listRequestPermission.toArray(new String[listRequestPermission.size()]);
+            requestPermissions(strRequestPermission, REQUEST_CODE_LOC);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_LOC:
+                if (grantResults.length > 0) {
+                    for (int gr : grantResults) {
+                        // Check if request is granted or not
+                        if (gr != PackageManager.PERMISSION_GRANTED) {
+                            return;
+                        }
+                    }
+
+                    //TODO - Add your code here to start Discovery
+
+                }
+                break;
+            default:
+                return;
         }
     }
 }
