@@ -23,13 +23,13 @@
             android:textSize="20sp"
             android:text="Demo Bluetooth Device"/>
 
-        <TextView
+       <!-- <TextView
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textSize="15sp"
-            android:text="Design by Viet Plus"/>
+            android:text="Design by Viet Plus"/>-->
 
     </LinearLayout>
 

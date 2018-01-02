@@ -63,8 +63,10 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        Log.d(TAG, "convert HEX to DECIMAL: " + Utils.convertHexToDecimal("057B"));
-        Log.d(TAG, "convert HEX to FLOAT: " + Utils.convertHexToFloat("057B"));
+        Log.d(TAG, "convert to degree: " + Utils.convertIntegerToCoolantTemperature("7B") + " °C");
+        Log.d(TAG, "convert to rpm: " + Utils.convertIntegerToEngineRPM("1AF8") + "rpm");
+        Log.d(TAG, "convert to vehicle speed: " + Utils.convertIntegerToVehicleSpeed("2A") + " km/h");
+        Log.d(TAG, "convert to fuel tank: " + Utils.convertIntegerToFuelTank("3B") + " %");
         initViews();
         initControls();
         initService();

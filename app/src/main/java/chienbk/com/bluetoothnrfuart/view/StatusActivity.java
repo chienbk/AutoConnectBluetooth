@@ -35,6 +35,7 @@ import java.util.Date;
 import chienbk.com.bluetoothnrfuart.R;
 import chienbk.com.bluetoothnrfuart.service.BluetoothService;
 import chienbk.com.bluetoothnrfuart.utils.Contans;
+import chienbk.com.bluetoothnrfuart.utils.Utils;
 
 public class StatusActivity extends AppCompatActivity {
 
@@ -186,27 +187,33 @@ public class StatusActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     public void run() {
                         try {
-                            String text = new String(txValue, "UTF-8");
+                            String text = new String(txValue, "UTF-8").replaceAll("\\s+","");
+
                             Log.d(TAG, "dataReceive: " + txValue.toString());
                             Log.d(TAG, "data After format: " + text);
+
                             String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
                             listAdapter.add("["+currentDateTimeString+"] Receive: "+text);
                             lvMessage.smoothScrollToPosition(listAdapter.getCount() - 1);
-                            showMessage("["+currentDateTimeString+"] Receive: "+text);
-                            if (text.contains("01 0D")) {
-                                txtVehicleSpeed.setText(text.substring(1, text.length()));
+
+                            if (text.contains(Contans.CONS_VERHICLE_SPEED)) {
+                                text = Utils.convertDataReceiveToString(text);
+                                txtVehicleSpeed.setText(Utils.convertIntegerToVehicleSpeed(text)+ " km/h");
                             }
 
-                            if (text.contains("1 0C")){
-                                txtEngineRPM.setText(text.substring(1, text.length()));
+                            if (text.contains(Contans.CONS_ENGINE_RPM)){
+                                text = Utils.convertDataReceiveToString(text);
+                                txtEngineRPM.setText(Utils.convertIntegerToEngineRPM(text) + " rpm");
                             }
 
-                            if (text.contains("1 05")) {
-                                txtEngineCoolant.setText(text.substring(1, text.length()));
+                            if (text.contains(Contans.CONS_ENGINE_COOLANT_TEMPERATURE)) {
+                                text = Utils.convertDataReceiveToString(text);
+                                txtEngineCoolant.setText(Utils.convertIntegerToCoolantTemperature(text) + " °C");
                             }
 
-                            if (text.contains("1 2F")) {
-                                txtFuelTank.setText(text.substring(1, text.length()));
+                            if (text.contains(Contans.CONS_FUEL_TANK_LEVEL_INPUT)) {
+                                text = Utils.convertDataReceiveToString(text);
+                                txtFuelTank.setText(Utils.convertIntegerToFuelTank(text) + " %");
                             }
 
                         } catch (Exception e) {
@@ -258,7 +265,7 @@ public class StatusActivity extends AppCompatActivity {
                     String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
                     listAdapter.add("["+currentDateTimeString+"] Send: "+ message);
                     lvMessage.smoothScrollToPosition(listAdapter.getCount() - 1);
-                    showMessage("["+currentDateTimeString+"] Send: "+ message);
+                    //showMessage("["+currentDateTimeString+"] Send: "+ message);
                     editMessage.setText("");
                 } catch (UnsupportedEncodingException e) {
                     // TODO Auto-generated catch block

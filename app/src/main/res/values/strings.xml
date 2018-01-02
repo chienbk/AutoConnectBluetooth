@@ -47,4 +47,8 @@
     <string name="scan">Scan</string>
     <string name="cancel">Cancel</string>
     <string name="btn_connect_device">Connect Device</string>
+    <string name="lb_temperature">°C</string>
+    <string name="lb_speed">km/h</string>
+    <string name="lb_rpm">rpm</string>
+    <string name="lb_fuelTank">%</string>
 </resources>
