@@ -30,6 +30,7 @@ import java.util.List;
 
 import chienbk.com.bluetoothnrfuart.R;
 import chienbk.com.bluetoothnrfuart.service.BluetoothService;
+import chienbk.com.bluetoothnrfuart.utils.Utils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -61,6 +62,9 @@ public class MainActivity extends AppCompatActivity {
             finish();
             return;
         }
+
+        Log.d(TAG, "convert HEX to DECIMAL: " + Utils.convertHexToDecimal("057B"));
+        Log.d(TAG, "convert HEX to FLOAT: " + Utils.convertHexToFloat("057B"));
         initViews();
         initControls();
         initService();

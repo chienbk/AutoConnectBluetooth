@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BluetoothNrfUart</string>
+    <string name="app_name">OBD BLUE</string>
     <string name="device">Device:</string>
     <string name="no_device">&lt;Select a device&gt;</string>
     <string name="select_device">Select a device</string>
