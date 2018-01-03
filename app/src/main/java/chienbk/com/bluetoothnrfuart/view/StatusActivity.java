@@ -113,7 +113,7 @@ public class StatusActivity extends AppCompatActivity {
         @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-
+            enableButton();
             mService = ((BluetoothService.LocalBinder) iBinder).getService();
             layout_rpm.setClickable(true);
             layout_coolant.setClickable(true);
@@ -130,9 +130,24 @@ public class StatusActivity extends AppCompatActivity {
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
+            dissableButton();
             mService = null;
         }
     };
+
+    private void dissableButton(){
+        layout_coolant.setEnabled(false);
+        layout_rpm.setEnabled(false);
+        layout_fuel.setEnabled(false);
+        layout_speed.setEnabled(false);
+    }
+
+    private void enableButton() {
+        layout_coolant.setEnabled(true);
+        layout_rpm.setEnabled(true);
+        layout_fuel.setEnabled(true);
+        layout_speed.setEnabled(true);
+    }
 
     private final BroadcastReceiver UARTStatusChangeReceiver = new BroadcastReceiver() {
 
@@ -146,6 +161,7 @@ public class StatusActivity extends AppCompatActivity {
             if (action.equals(BluetoothService.ACTION_GATT_CONNECTED)) {
                 runOnUiThread(new Runnable() {
                     public void run() {
+                        enableButton();
                         String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
                         Log.d(TAG, "UART_CONNECT_MSG");
                         //btnConnectDisconnect.setText("Disconnect");
@@ -162,6 +178,7 @@ public class StatusActivity extends AppCompatActivity {
             if (action.equals(BluetoothService.ACTION_GATT_DISCONNECTED)) {
                 runOnUiThread(new Runnable() {
                     public void run() {
+                        dissableButton();
                         String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
                         Log.d(TAG, "UART_DISCONNECT_MSG");
                         editMessage.setEnabled(false);
@@ -225,6 +242,7 @@ public class StatusActivity extends AppCompatActivity {
             //*********************//
             if (action.equals(BluetoothService.DEVICE_DOES_NOT_SUPPORT_UART)){
                 showMessage("Device doesn't support UART. Disconnecting");
+                dissableButton();
                 mService.disconnect();
             }
 
@@ -354,10 +372,8 @@ public class StatusActivity extends AppCompatActivity {
         layout_coolant = (LinearLayout) findViewById(R.id.layout_coolant);
         layout_fuel = (LinearLayout) findViewById(R.id.layout_fuel);
 
-        layout_speed.setClickable(false);
-        layout_fuel.setClickable(false);
-        layout_coolant.setClickable(false);
-        layout_rpm.setClickable(false);
+        dissableButton();
+
     }
 
     private void showMessage(String msg){
@@ -367,6 +383,8 @@ public class StatusActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        mService.disconnect();
+        finish();
     }
 
     @Override
