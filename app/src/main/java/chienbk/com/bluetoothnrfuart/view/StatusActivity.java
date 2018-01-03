@@ -71,7 +71,6 @@ public class StatusActivity extends AppCompatActivity {
             return;
         }
         Intent intent = getIntent();
-        //Bundle bundle = intent.getBundleExtra(BluetoothDevice.EXTRA_DEVICE);
         Bundle bundle = intent.getExtras();
         initService();
         initViews();
@@ -81,7 +80,6 @@ public class StatusActivity extends AppCompatActivity {
             deviceAddress = bundle.getString(BluetoothDevice.EXTRA_DEVICE);
             Log.d(TAG, "deviceAddress: " + deviceAddress);
             mDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceAddress);
-            //mService.connect(deviceAddress);
             showMessage(mDevice.getName() + "connecting...");
         }
     }
@@ -164,7 +162,6 @@ public class StatusActivity extends AppCompatActivity {
                         enableButton();
                         String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
                         Log.d(TAG, "UART_CONNECT_MSG");
-                        //btnConnectDisconnect.setText("Disconnect");
                         editMessage.setEnabled(true);
                         btnSendMessage.setEnabled(true);
                         listAdapter.add("["+currentDateTimeString+"] Connected to: "+ mDevice.getName());
@@ -283,7 +280,6 @@ public class StatusActivity extends AppCompatActivity {
                     String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
                     listAdapter.add("["+currentDateTimeString+"] Send: "+ message);
                     lvMessage.smoothScrollToPosition(listAdapter.getCount() - 1);
-                    //showMessage("["+currentDateTimeString+"] Send: "+ message);
                     editMessage.setText("");
                 } catch (UnsupportedEncodingException e) {
                     // TODO Auto-generated catch block

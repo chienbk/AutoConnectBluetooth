@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.le.BluetoothLeScanner;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -30,7 +29,6 @@ import java.util.List;
 
 import chienbk.com.bluetoothnrfuart.R;
 import chienbk.com.bluetoothnrfuart.service.BluetoothService;
-import chienbk.com.bluetoothnrfuart.utils.Utils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -62,11 +60,6 @@ public class MainActivity extends AppCompatActivity {
             finish();
             return;
         }
-
-        Log.d(TAG, "convert to degree: " + Utils.convertIntegerToCoolantTemperature("7B") + " °C");
-        Log.d(TAG, "convert to rpm: " + Utils.convertIntegerToEngineRPM("1AF8") + "rpm");
-        Log.d(TAG, "convert to vehicle speed: " + Utils.convertIntegerToVehicleSpeed("2A") + " km/h");
-        Log.d(TAG, "convert to fuel tank: " + Utils.convertIntegerToFuelTank("3B") + " %");
         initViews();
         initControls();
         initService();
@@ -115,66 +108,6 @@ public class MainActivity extends AppCompatActivity {
 
         @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
         public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-
-            /*final Intent mIntent = intent;
-            /*//*********************//*/
-            if (action.equals(BluetoothService.ACTION_GATT_CONNECTED)) {
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        *//*String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
-                        Log.d(TAG, "UART_CONNECT_MSG");
-                        btnSelectDevice.setText("Disconnect");
-                        edtMessage.setEnabled(true);
-                        btnSend.setEnabled(true);
-                        ((TextView) findViewById(R.id.deviceName)).setText(mDevice.getName()+ " - ready");
-                        mListSensor.get(0).setValue("["+currentDateTimeString+"] Connected to: "+ mDevice.getName());
-                        statusAdapter = new ListStatusAdapter(MainActivity.this, mListSensor);
-                        statusAdapter.notifyDataSetChanged();
-                        messageListView.setAdapter(statusAdapter);
-                        statusAdapter.notifyDataSetChanged();*//*
-                        *//*btnSelectDevice.setText("Disconnect");
-                        showMessage(mDevice.getName() + " ready!");*//*
-
-                        //listAdapter.add("["+currentDateTimeString+"] Connected to: "+ mDevice.getName());
-                        //messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
-                        mState = UART_PROFILE_CONNECTED;
-                    }
-                });
-            }
-
-            /*//*********************//*/
-            if (action.equals(BluetoothService.ACTION_GATT_DISCONNECTED)) {
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                       *//* String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
-                        Log.d(TAG, "UART_DISCONNECT_MSG");
-                        btnConnectDisconnect.setText("Connect");
-                        edtMessage.setEnabled(false);
-                        btnSend.setEnabled(false);
-                        ((TextView) findViewById(R.id.deviceName)).setText("Not Connected");*//*
-                        //listAdapter.add("["+currentDateTimeString+"] Disconnected to: "+ mDevice.getName());
-                        mState = UART_PROFILE_DISCONNECTED;
-                        mService.close();
-                        //setUiState();
-
-                        *//*btnSelectDevice.setText("Connect Device");
-                        showMessage("Not connect!");*//*
-                    }
-                });
-            }
-
-
-            /*//*********************//*/
-            if (action.equals(BluetoothService.ACTION_GATT_SERVICES_DISCOVERED)) {
-                mService.enableTXNotification();
-            }
-
-            /*//*********************//*/
-            if (action.equals(BluetoothService.DEVICE_DOES_NOT_SUPPORT_UART)){
-                showMessage("Device doesn't support UART. Disconnecting");
-                mService.disconnect();
-            }*/
         }
     };
 
@@ -198,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
                         //Connect button pressed, open DeviceListActivity class, with popup windows that scan for devices
 
                         Intent newIntent = new Intent(MainActivity.this, DeviceListActivity.class);
-                        //startActivity(newIntent);
                         startActivity(newIntent);
                     } else {
                         //Disconnect button pressed

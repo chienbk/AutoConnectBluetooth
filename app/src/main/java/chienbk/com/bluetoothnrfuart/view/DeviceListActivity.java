@@ -100,8 +100,6 @@ public class DeviceListActivity extends AppCompatActivity {
         about.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*startActivity(new Intent(DeviceListActivity.this, StatusActivity.class));
-                finish();*/
                 showMessage("Please contact me!!!");
             }
         });
@@ -187,10 +185,6 @@ public class DeviceListActivity extends AppCompatActivity {
         if (!deviceFound) {
             deviceList.add(device);
             mEmptyList.setVisibility(View.GONE);
-
-
-
-
             deviceAdapter.notifyDataSetChanged();
         }
     }
@@ -225,7 +219,6 @@ public class DeviceListActivity extends AppCompatActivity {
         @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            BluetoothDevice device = deviceList.get(position);
             mBluetoothAdapter.stopLeScan(mLeScanCallback);
 
             Bundle b = new Bundle();
@@ -234,11 +227,6 @@ public class DeviceListActivity extends AppCompatActivity {
             Intent intent = new Intent(DeviceListActivity.this, StatusActivity.class);
             intent.putExtras(b);
             startActivity(intent);
-            //finish();
-
-            /*startActivity(new Intent(DeviceListActivity.this, HomeActivity.class));
-            finish();*/
-
         }
     };
 
