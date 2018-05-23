@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/BluetoothNrfUart.iml" filepath="$PROJECT_DIR$/BluetoothNrfUart.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AutoConnectBluetooth.iml" filepath="$PROJECT_DIR$/AutoConnectBluetooth.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
