@@ -201,6 +201,7 @@ public class StatusActivity extends AppCompatActivity {
                         if (deviceAddress != null){
                             mDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceAddress);
                         }
+
                         //mService.close();
                         //setUiState();
 
