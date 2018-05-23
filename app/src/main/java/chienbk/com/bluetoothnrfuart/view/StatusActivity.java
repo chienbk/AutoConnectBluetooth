@@ -11,6 +11,7 @@ import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.LocalBroadcastManager;
@@ -36,6 +37,7 @@ import chienbk.com.bluetoothnrfuart.R;
 import chienbk.com.bluetoothnrfuart.service.BluetoothService;
 import chienbk.com.bluetoothnrfuart.utils.Contans;
 import chienbk.com.bluetoothnrfuart.utils.Utils;
+import chienbk.com.bluetoothnrfuart.utils.WriteToFile;
 
 public class StatusActivity extends AppCompatActivity {
 
@@ -162,11 +164,24 @@ public class StatusActivity extends AppCompatActivity {
                         enableButton();
                         String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
                         Log.d(TAG, "UART_CONNECT_MSG");
+                        WriteToFile.writeLogCatToFile();
                         editMessage.setEnabled(true);
                         btnSendMessage.setEnabled(true);
                         listAdapter.add("["+currentDateTimeString+"] Connected to: "+ mDevice.getName());
                         lvMessage.smoothScrollToPosition(listAdapter.getCount() - 1);
                         mState = UART_PROFILE_CONNECTED;
+
+                        while (true){
+
+                            final Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // Do something after 5s = 5000ms
+                                    writeData(Contans.VERHICLE_SPEED);
+                                }
+                            }, 3000);
+                        }
                     }
                 });
             }
@@ -182,7 +197,11 @@ public class StatusActivity extends AppCompatActivity {
                         btnSendMessage.setEnabled(false);
                         listAdapter.add("["+currentDateTimeString+"] Disconnected to: "+ mDevice.getName());
                         mState = UART_PROFILE_DISCONNECTED;
-                        mService.close();
+                        WriteToFile.writeLogCatToFile();
+                        if (deviceAddress != null){
+                            mDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceAddress);
+                        }
+                        //mService.close();
                         //setUiState();
 
                     }
@@ -204,7 +223,9 @@ public class StatusActivity extends AppCompatActivity {
                             String text = new String(txValue, "UTF-8").replaceAll("\\s+","");
 
                             Log.d(TAG, "dataReceive: " + txValue.toString());
+                            showMessage("dataReceive: " + text);
                             Log.d(TAG, "data After format: " + text);
+                            WriteToFile.writeLogCatToFile();
 
                             String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
                             listAdapter.add("["+currentDateTimeString+"] Receive: "+text);
@@ -264,6 +285,25 @@ public class StatusActivity extends AppCompatActivity {
         return super.dispatchTouchEvent( event );
     }
 
+    private void writeData(String msg){
+        showMessage("Data send: " + msg);
+        Log.d(TAG, "send message: " + msg);
+        WriteToFile.writeLogCatToFile();
+        byte[] value;
+        try {
+            //send data to service
+            value = msg.getBytes("UTF-8");
+            mService.writeRXCharacteristic(value);
+            //Update the log with time stamp
+            String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
+            listAdapter.add("["+currentDateTimeString+"] Send: "+ msg);
+            lvMessage.smoothScrollToPosition(listAdapter.getCount() - 1);
+            editMessage.setText("");
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
     private void initControls() {
         //// TODO: 12/21/2017
 

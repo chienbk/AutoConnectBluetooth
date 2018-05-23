@@ -1,5 +1,9 @@
 package chienbk.com.bluetoothnrfuart.utils;
 
+import android.os.Environment;
+
+import java.io.File;
+
 /**
  * Created by Chienbk on 12/19/2017.
  */
@@ -20,4 +24,11 @@ public class Contans {
     public static final String CONS_FUEL_TANK_LEVEL_INPUT = "412F";
 
     public static final int CONS_TEMPERATURE = 40;
+
+    public static final String APP_DATA_FOLDER_NAME = "K-Doctor";
+
+    private static final String PATH_SDCARD = Environment
+            .getExternalStorageDirectory().getAbsolutePath();
+    static final String PATH_LOG_FOLDER = PATH_SDCARD + File.separator
+            + APP_DATA_FOLDER_NAME + File.separator + "log";
 }

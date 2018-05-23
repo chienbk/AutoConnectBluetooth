@@ -1,5 +1,7 @@
 package chienbk.com.bluetoothnrfuart.utils;
 
+import java.io.File;
+
 /**
  * Created by ChienNV9 on 1/2/2018.
  */
@@ -67,5 +69,29 @@ public class Utils {
         String newData = data.replaceAll(">", "");
         newData = newData.replaceAll("\\s+","");
         return newData.substring(4, newData.length());
+    }
+
+    static boolean createLogFolder() {
+        try {
+            String logFolder = Contans.PATH_LOG_FOLDER;
+            // delete if exist
+            // deleteFileOrFolder(new File(logFolder));
+            return createFolder(logFolder);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean createFolder(String path) {
+        try {
+            File folder = new File(path);
+            if (!folder.exists()) {
+                return folder.mkdirs();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
